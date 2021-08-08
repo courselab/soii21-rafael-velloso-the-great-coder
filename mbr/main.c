@@ -34,21 +34,21 @@ int main()
   while (1)
     {
   
-      print (PROMPT);		        /* Show prompt. */
+        print (PROMPT);		        /* Show prompt. */
 
-      read (cmd);		        /* Read user command. */
+        read (cmd);		        /* Read user command. */
 
-      /* Process user command. */
+        /* Process user command. */
       
-      if (compare(cmd, HELP_CMD))       /* Command help. */
-	help();
-      else if (compare(cmd, QUIT_CMD))  /* Command quit. */
-	quit();
-      else
-	{
-	  print (cmd);		        /* Unkown command. */
-	  printnl (NOT_FOUND);
-	}
+        if (compare(cmd, QUIT_CMD))  /* Command quit. */
+            quit();
+        else if (compare(cmd, MOVC_CMD))
+            move_cursor();
+        else
+        {
+            print (cmd);		        /* Unkown command. */
+            printnl (NOT_FOUND);
+        }
     }
   
   return 0;

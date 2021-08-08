@@ -111,16 +111,6 @@ void __attribute__((fastcall, naked)) read (char *buffer)
   
 }
 
-/* Output a help(-less) message. */
-
-void __attribute__((naked)) help (void)
-{
-  printnl ("I wish... (too small a program for anything else).");
-
-  __asm__ ("ret");   	   /* Naked functions lack return. */
-
-}
-
 /* Compare two strings up to position BUFFER_MAX_LENGTH-1. */
 
 int __attribute__((fastcall, naked)) compare (char *s1, char *s2)
@@ -143,6 +133,62 @@ int __attribute__((fastcall, naked)) compare (char *s1, char *s2)
      );
 
   return 0;                /* Bogus return to fulfill funtion's prototype.*/
+}
+
+
+void __attribute__((fastcall, naked)) move_cursor()
+{
+    __asm__ volatile
+    (
+        "call clear;"
+        "mov $0x0, %%bh;"
+        "mov $0x0, %%dh;"
+        "mov $0x0, %%dl;"
+        "mov $0x2, %%ah;"
+        "int $0x10;"
+        
+        "main_loop%=:;"
+            "mov $0x0, %%ah;"
+            "int $0x16;"
+            
+            "mov $0x2, %%ah;"
+            "cmp $0x77, %%al;"
+            "je go_up%=;"
+            "cmp $0x73, %%al;"
+            "je go_down%=;"
+            "cmp $0x61, %%al;"
+            "je go_left%=;"
+            "cmp $0x64, %%al;"
+            "je go_right%=;"
+            "cmp $0x1b, %%al;"
+            "je the_end%=;"
+            
+            "jmp main_loop%=;"
+        
+        "go_down%=:;"
+    	    "add $0x1, %%dh;"
+    	    "int $0x10;"
+            "jmp main_loop%=;"
+
+	    "go_up%=:;"
+	        "sub $0x1, %%dh;"
+	        "int $0x10;"
+            "jmp main_loop%=;"
+
+	    "go_right%=:;"
+	        "add $0x1, %%dl;"
+	        "int $0x10;"
+            "jmp main_loop%=;"
+
+	    "go_left%=:;"
+	        "sub $0x1, %%dl;"
+	        "int $0x10;"
+            "jmp main_loop%=;"
+            
+        "the_end%=:;"
+            "ret;"
+        :::"ax", "bx","dx"
+    );
 }
 
 /* Notes.

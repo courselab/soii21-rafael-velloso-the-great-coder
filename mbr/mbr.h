@@ -61,7 +61,13 @@ void __attribute__((naked)) help (void);
 
 /* Quit. */
 
+void __attribute__((fastcall, naked)) move_cursor();
+
+/* Move cursor */
+
 #define QUIT_CMD "quit"
+
+#define MOVC_CMD "movc"
 
 #define quit() printnl("Sorry...")
 
