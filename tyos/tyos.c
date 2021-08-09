@@ -52,95 +52,95 @@ void __attribute__((naked, fastcall)) game()
         "mov $0x0, %%bh;"
         "mov $0x0, %%dh;"
         "mov $0x0, %%dl;"
-		
+
         "mov $0x0, %%ch;" // fill flag (starts with false)
         "mov $0x0, %%cl;" // eraser flag (starts with false)
-	 	
+
         "jmp read_input%=;" // jumps to main loop
     
         // decides whether or not to draw when moving cursor (depending on fill flag)
-	 	"pencil%=:;"
-			"cmp $0x1, %%ch;"
-			"je fill%=;"
-		   	"cmp $0x0, %%ch;"
-			"je do_nothing%=;"
+        "pencil%=:;"
+            "cmp $0x1, %%ch;"
+            "je fill%=;"
+            "cmp $0x0, %%ch;"
+            "je do_nothing%=;"
 
-			"fill%=:;"
+            "fill%=:;"
                 "mov $0x0e, %%ah;"
                 "mov $0x0, %%si;"
-				"mov $0x2a, %%al;"
-				"int $0x10;"
-			"do_nothing%=:;"
+                "mov $0x2a, %%al;"
+                "int $0x10;"
+            "do_nothing%=:;"
                 "ret;"
         
         // prints a '\0' char at current position (erases)
         "eraser%=:;"
-			"mov $0x0e, %%ah;"
+            "mov $0x0e, %%ah;"
             "mov $0x0, %%si;"
             "mov $0x0, %%al;"
-			"int $0x10;"
+            "int $0x10;"
             "ret;"
         
         // changes fill flag (from false to true or vice-versa)
-		"change_fill_flag%=:;"
-			"cmp $0x0, %%ch;" // checks if false
-			"je false1%=;"
-			"cmp $0x1, %%ch;" // checks if true
-			"je true1%=;"
+        "change_fill_flag%=:;"
+            "cmp $0x0, %%ch;" // checks if false
+            "je false1%=;"
+            "cmp $0x1, %%ch;" // checks if true
+            "je true1%=;"
             
             "false1%=:;"
-				"mov $0x1, %%ch;" // fill flag becomes true
+                "mov $0x1, %%ch;" // fill flag becomes true
                 "mov $0x0, %%cl;" // eraser flag becomes false
-				"jmp read_input%=;"
-			"true1%=:;"
-				"mov $0x0, %%ch;" // fill flag becomes false
-				"jmp read_input%=;"
+                "jmp read_input%=;"
+            "true1%=:;"
+                "mov $0x0, %%ch;" // fill flag becomes false
+                "jmp read_input%=;"
         
         // changes eraser flag (from false to true or vice-versa)
         "change_eraser_flag%=:;"
-			"cmp $0x0, %%cl;" // checks if false
-			"je false2%=;"
-			"cmp $0x1, %%cl;" // checks if true
-			"je true2%=;"
+            "cmp $0x0, %%cl;" // checks if false
+            "je false2%=;"
+            "cmp $0x1, %%cl;" // checks if true
+            "je true2%=;"
             
             "false2%=:;"
-				"mov $0x1, %%cl;" // eraser flag becomes true
+                "mov $0x1, %%cl;" // eraser flag becomes true
                 "mov $0x0, %%ch;" // fill flag becomes false
-				"jmp read_input%=;"
-			"true2%=:;"
-				"mov $0x0, %%cl;" // eraser flag becomes false
-				"jmp read_input%=;"
+                "jmp read_input%=;"
+            "true2%=:;"
+                "mov $0x0, %%cl;" // eraser flag becomes false
+                "jmp read_input%=;"
         
         // moves cursor UP
-	    "go_up%=:;"
-	        "sub $0x1, %%dh;"
-	        "int $0x10;"
+        "go_up%=:;"
+            "sub $0x1, %%dh;"
+            "int $0x10;"
             "cmp $0x77, %%al;" // W
- 	  		"je end_input_draw%=;"
+            "je end_input_draw%=;"
             "jmp end_input_erase%=;"
         
         // moves cursor DOWN
         "go_down%=:;"
-    	    "add $0x1, %%dh;"
-    	    "int $0x10;"
+            "add $0x1, %%dh;"
+            "int $0x10;"
             "cmp $0x73, %%al;" // S
-    	    "je end_input_draw%=;"
+            "je end_input_draw%=;"
             "jmp end_input_erase%=;"
         
         // moves cursor LEFT
         "go_left%=:;"
-	        "sub $0x1, %%dl;"
-	        "int $0x10;"
-	        "cmp $0x61, %%al;" // A
-    	    "je end_input_draw%=;"
+            "sub $0x1, %%dl;"
+            "int $0x10;"
+            "cmp $0x61, %%al;" // A
+            "je end_input_draw%=;"
             "jmp end_input_erase%=;"
         
         // moves cursor RIGHT
-	    "go_right%=:;"
-	        "add $0x1, %%dl;"
-	        "int $0x10;"
+        "go_right%=:;"
+            "add $0x1, %%dl;"
+            "int $0x10;"
             "cmp $0x64, %%al;" // D
-    	    "je end_input_draw%=;"
+            "je end_input_draw%=;"
             "jmp end_input_erase%=;"
             
         "put_char%=:;"
@@ -170,21 +170,21 @@ void __attribute__((naked, fastcall)) game()
         
             "mov $0x2, %%ah;"
             "int $0x10;"
-			
+            
             // reads input from keyboard
             "mov $0x0, %%ah;"
-			"int $0x16;"
+            "int $0x16;"
             
-			"mov $0x2, %%ah;"
+            "mov $0x2, %%ah;"
             
-			"cmp $0x77, %%al;" // W
+            "cmp $0x77, %%al;" // W
             "je go_up%=;"
-        	"cmp $0x73, %%al;" // S
-        	"je go_down%=;"
-        	"cmp $0x61, %%al;" // A
-        	"je go_left%=;"
-        	"cmp $0x64, %%al;" // D
-        	"je go_right%=;"
+            "cmp $0x73, %%al;" // S
+            "je go_down%=;"
+            "cmp $0x61, %%al;" // A
+            "je go_left%=;"
+            "cmp $0x64, %%al;" // D
+            "je go_right%=;"
             
             "cmp $0x75, %%al;" // U
             "je go_up%=;"
@@ -196,10 +196,10 @@ void __attribute__((naked, fastcall)) game()
             "je go_right%=;"
             
             // changes flags
-			"cmp $0x71, %%al;" // Q
-			"je change_fill_flag%=;"
-			"cmp $0x65, %%al;" // E
-			"je change_eraser_flag%=;"
+            "cmp $0x71, %%al;" // Q
+            "je change_fill_flag%=;"
+            "cmp $0x65, %%al;" // E
+            "je change_eraser_flag%=;"
             
             // draws or erases a char (depending on eraser flag)
             "cmp $0x20, %%al;" // SPACE
@@ -209,7 +209,7 @@ void __attribute__((naked, fastcall)) game()
             "cmp $0x1b, %%al;" // ESC
             "je end_of_game%=;"
             
-			"jmp read_input%=;"
+            "jmp read_input%=;"
             
             // draws or not after moving cursor (depending on fill flag)
             "end_input_draw%=:;"
@@ -223,10 +223,9 @@ void __attribute__((naked, fastcall)) game()
         
         "end_of_game%=:;"
             "ret;"
-		
+            
     :::"ax","bx","cx","dx"    
     );
-	
 #endif
 }
 
