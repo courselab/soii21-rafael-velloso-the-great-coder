@@ -22,167 +22,124 @@
 
 #define DEBUG 0
 
-void halt()
+void  __attribute__((naked)) welcome()
 {
-    clear();
-    game();
-	
-}
-
-void __attribute__((naked, fastcall)) game()
-{
-
-#if DEBUG    
     printnl("Welcome to DrawOS! Here are the commands:\r\n\n"
             "W A S D: move the cursor\r\n"
             "U H J K: move the cursor but erasing\r\n"
             "Q: toggle fill mode\r\n"
             "E: toggle eraser mode\r\n"
-            "ESC: refresh\n");
+            "ESC: reset game\n");
     
     printnl("Press any key to start!");
-#endif
+    
+    __asm__ volatile 
+    (
+        "mov $0x0, %%ah;"
+        "int $0x16;"
+        "call clear;"
+        "ret;"
+        :::"ax"
+    );
+}
 
+void __attribute__((naked, fastcall)) game()
+{   
 #if !DEBUG
     __asm__ volatile
-    (	
+    (
+        // sets cursor position to (0,0)
         "mov $0x0, %%bh;"
         "mov $0x0, %%dh;"
         "mov $0x0, %%dl;"
-        "mov $0x2, %%ah;"
-        "int $0x10;"
-		"mov $0x1, %%ch;"
-        "mov $0x0, %%cl;" // eraser mode
-	 	"jmp draw_loop%=;"
-
+		
+        "mov $0x0, %%ch;" // fill flag (starts with false)
+        "mov $0x0, %%cl;" // eraser flag (starts with false)
+	 	
+        "jmp read_input%=;" // jumps to main loop
+    
+        // decides whether or not to draw when moving cursor (depending on fill flag)
 	 	"pencil%=:;"
-			"mov $0x0e, %%ah;"
-            "mov $0x0, %%si;"
-			"cmp $0x0, %%ch;"
-			"je draw%=;"
-		   	"cmp $0x1, %%ch;"
+			"cmp $0x1, %%ch;"
+			"je fill%=;"
+		   	"cmp $0x0, %%ch;"
 			"je do_nothing%=;"
 
-			"draw%=:;"
+			"fill%=:;"
+                "mov $0x0e, %%ah;"
+                "mov $0x0, %%si;"
 				"mov $0x2a, %%al;"
 				"int $0x10;"
 			"do_nothing%=:;"
                 "ret;"
-                
+        
+        // prints a '\0' char at current position (erases)
         "eraser%=:;"
 			"mov $0x0e, %%ah;"
             "mov $0x0, %%si;"
             "mov $0x0, %%al;"
 			"int $0x10;"
             "ret;"
-
-		"change_fill_flag%=:;"
-			"cmp $0x0, %%ch;"
-			"je false1%=;"
-			"cmp $0x1, %%ch;"
-			"je true1%=;"
-				"false1%=:;"
-					"mov $0x1, %%ch;"
-                    "mov $0x0, %%cl;"
-					"jmp read_input%=;"
-				"true1%=:;"
-					"mov $0x0, %%ch;"
-					"jmp read_input%=;"
-                    
-        "change_eraser_flag%=:;"
-			"cmp $0x0, %%cl;"
-			"je false2%=;"
-			"cmp $0x1, %%cl;"
-			"je true2%=;"
-				"false2%=:;"
-					"mov $0x1, %%cl;"
-                    "mov $0x1, %%ch;"
-					"jmp read_input%=;"
-				"true2%=:;"
-					"mov $0x0, %%cl;"
-					"jmp read_input%=;"
         
-
-		"read_input%=:;"
-			"mov $0x0, %%ah;"
-			"int $0x16;"
-			"mov $0x2, %%ah;"
+        // changes fill flag (from false to true or vice-versa)
+		"change_fill_flag%=:;"
+			"cmp $0x0, %%ch;" // checks if false
+			"je false1%=;"
+			"cmp $0x1, %%ch;" // checks if true
+			"je true1%=;"
             
-			"cmp $0x77, %%al;"
-            "je go_up%=;"
-        	"cmp $0x73, %%al;"
-        	"je go_down%=;"
-        	"cmp $0x61, %%al;"
-        	"je go_left%=;"
-        	"cmp $0x64, %%al;"
-        	"je go_right%=;"
+            "false1%=:;"
+				"mov $0x1, %%ch;" // fill flag becomes true
+                "mov $0x0, %%cl;" // eraser flag becomes false
+				"jmp read_input%=;"
+			"true1%=:;"
+				"mov $0x0, %%ch;" // fill flag becomes false
+				"jmp read_input%=;"
+        
+        // changes eraser flag (from false to true or vice-versa)
+        "change_eraser_flag%=:;"
+			"cmp $0x0, %%cl;" // checks if false
+			"je false2%=;"
+			"cmp $0x1, %%cl;" // checks if true
+			"je true2%=;"
             
-            "cmp $0x75, %%al;"
-            "je go_up%=;"
-            "cmp $0x6a, %%al;"
-            "je go_down%=;"
-            "cmp $0x68, %%al;"
-            "je go_left%=;"
-            "cmp $0x6b, %%al;"
-            "je go_right%=;"
-            
-			"cmp $0x71, %%al;"
-			"je change_fill_flag%=;"
-			"cmp $0x65, %%al;"
-			"je change_eraser_flag%=;"
-            
-            "cmp $0x20, %%al;"
-            "je put_char%=;"
-            
-            "cmp $0x1b, %%al;"
-            "je clear_screen%=;"
-            
-			"jmp read_input%=;"
-            
-            "end_input_draw%=:;"
-                "call pencil%=;"
-                "jmp draw_loop%=;"
-            
-            "end_input_erase%=:;"
-                "call eraser%=;"
-                "jmp draw_loop%=;"
-                
-            "clear_screen%=:;"
-                "call clear;"
-                "mov $0x0, %%bh;"
-                "mov $0x10, %%dh;"
-                "mov $0x10, %%dl;"
-                "mov $0x2, %%ah;"
-                "int $0x10;"
-                "mov $0x1, %%ch;"
-                "mov $0x0, %%cl;" // eraser mode
-                "jmp draw_loop%=;"
-
-		"go_down%=:;"
-    	    "add $0x1, %%dh;"
-    	    "int $0x10;"
-            "cmp $0x73, %%al;"
-    	    "je end_input_draw%=;"
-            "jmp end_input_erase%=;"
-
+            "false2%=:;"
+				"mov $0x1, %%cl;" // eraser flag becomes true
+                "mov $0x0, %%ch;" // fill flag becomes false
+				"jmp read_input%=;"
+			"true2%=:;"
+				"mov $0x0, %%cl;" // eraser flag becomes false
+				"jmp read_input%=;"
+        
+        // moves cursor UP
 	    "go_up%=:;"
 	        "sub $0x1, %%dh;"
 	        "int $0x10;"
-            "cmp $0x77, %%al;"
+            "cmp $0x77, %%al;" // W
  	  		"je end_input_draw%=;"
             "jmp end_input_erase%=;"
-
+        
+        // moves cursor DOWN
+        "go_down%=:;"
+    	    "add $0x1, %%dh;"
+    	    "int $0x10;"
+            "cmp $0x73, %%al;" // S
+    	    "je end_input_draw%=;"
+            "jmp end_input_erase%=;"
+        
+        // moves cursor LEFT
+        "go_left%=:;"
+	        "sub $0x1, %%dl;"
+	        "int $0x10;"
+	        "cmp $0x61, %%al;" // A
+    	    "je end_input_draw%=;"
+            "jmp end_input_erase%=;"
+        
+        // moves cursor RIGHT
 	    "go_right%=:;"
 	        "add $0x1, %%dl;"
 	        "int $0x10;"
-            "cmp $0x64, %%al;"
-    	    "je end_input_draw%=;"
-            "jmp end_input_erase%=;"
-
-	    "go_left%=:;"
-	        "sub $0x1, %%dl;"
-	        "int $0x10;"
-	        "cmp $0x61, %%al;"
+            "cmp $0x64, %%al;" // D
     	    "je end_input_draw%=;"
             "jmp end_input_erase%=;"
             
@@ -207,15 +164,79 @@ void __attribute__((naked, fastcall)) game()
                 "mov $0x2, %%ah;"
                 "int $0x10;"
                 "jmp read_input%=;"
+        
+        // MAIN LOOP
+        "read_input%=:;"
+        
+            "mov $0x2, %%ah;"
+            "int $0x10;"
+			
+            // reads input from keyboard
+            "mov $0x0, %%ah;"
+			"int $0x16;"
             
-		"draw_loop%=:;"
 			"mov $0x2, %%ah;"
-			"int $0x10;"
+            
+			"cmp $0x77, %%al;" // W
+            "je go_up%=;"
+        	"cmp $0x73, %%al;" // S
+        	"je go_down%=;"
+        	"cmp $0x61, %%al;" // A
+        	"je go_left%=;"
+        	"cmp $0x64, %%al;" // D
+        	"je go_right%=;"
+            
+            "cmp $0x75, %%al;" // U
+            "je go_up%=;"
+            "cmp $0x6a, %%al;" // J
+            "je go_down%=;"
+            "cmp $0x68, %%al;" // H
+            "je go_left%=;"
+            "cmp $0x6b, %%al;" // K
+            "je go_right%=;"
+            
+            // changes flags
+			"cmp $0x71, %%al;" // Q
+			"je change_fill_flag%=;"
+			"cmp $0x65, %%al;" // E
+			"je change_eraser_flag%=;"
+            
+            // draws or erases a char (depending on eraser flag)
+            "cmp $0x20, %%al;" // SPACE
+            "je put_char%=;"
+            
+            // resets game
+            "cmp $0x1b, %%al;" // ESC
+            "je end_of_game%=;"
+            
 			"jmp read_input%=;"
-			"jmp draw_loop%=;"
+            
+            // draws or not after moving cursor (depending on fill flag)
+            "end_input_draw%=:;"
+                "call pencil%=;"
+                "jmp read_input%=;"
+            
+            // erases after moving cursor
+            "end_input_erase%=:;"
+                "call eraser%=;"
+                "jmp read_input%=;"
+        
+        "end_of_game%=:;"
+            "ret;"
 		
     :::"ax","bx","cx","dx"    
     );
 	
 #endif
 }
+
+void __attribute__((naked, fastcall)) halt()
+{
+    while(1)
+    {
+        clear();
+        welcome();
+        game();
+    }
+}
+

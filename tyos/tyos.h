@@ -62,7 +62,7 @@ void load_stage2_block();
 
 /* Halt. */
 
-void halt();
+void __attribute__((naked, fastcall)) halt();
 
 
 #endif
