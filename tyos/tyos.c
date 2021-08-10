@@ -29,6 +29,7 @@ void  __attribute__((naked)) welcome()
             "U H J K: move the cursor but erasing\r\n"
             "Q: toggle fill mode\r\n"
             "E: toggle eraser mode\r\n"
+            "SPACE: draw or erase a single character (depending on eraser flag)\r\n"
             "ESC: reset game\n");
     
     printnl("Press any key to start!");
