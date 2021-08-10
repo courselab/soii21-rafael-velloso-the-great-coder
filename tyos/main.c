@@ -2,9 +2,9 @@
 
    Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
-   This file is part of <project>
+   This file is part of DrawOS
 
-   <project> is free software: you can redistribute it and/or modify
+   DrawOS is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.

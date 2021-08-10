@@ -76,11 +76,14 @@ void __attribute__((naked, fastcall)) clear (void)
      " mov $0x0, %%cx                    ;" /* Upper-left corner.             */
      " mov $0x184f, %%dx                 ;" /* Upper-right corner.            */
      " int $0x10                         ;" /* Call video BIOS service.       */
-        "mov $0x0, %%bh;"
-        "mov $0x0, %%dh;"
-        "mov $0x0, %%dl;"
-        "mov $0x2, %%ah;"
-        "int $0x10;"
+     
+     /* Move cursor to position (0,0) */
+     " mov $0x0, %%bh                    ;"
+     " mov $0x0, %%dh                    ;"
+     " mov $0x0, %%dl                    ;"
+     " mov $0x2, %%ah                    ;"
+     " int $0x10                         ;"
+     
      " ret                                " /* Return from function. */
      ::: "ax", "bx", "cx", "dx"		    /* Additional clobbered registers.*/
      );
