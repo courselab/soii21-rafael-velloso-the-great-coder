@@ -3,9 +3,6 @@
  ==============================
 
 There are three main folders in this project:
- - hw
- - mbr
- - tyos
 
 * HW is exercise 1: I fixed the bug that was printing the '\0' character;
 * MBR is exercise 2: I implemented a command called "movc", which enables
