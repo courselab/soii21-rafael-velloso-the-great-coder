@@ -8,6 +8,7 @@ There are three main folders in this project:
 * MBR is exercise 2: I implemented a command called "movc", which enables
   the user to move the cursor using "W A S D" keys. In order to exit the "movc"
   command, the ESCAPE key must be pressed;
+  
   To compile and run MBR, run the shell command: make mbr.bin/run
 * TYOS is exercise 3: I implemented a Drawing game (called DrawOS). The commands are as follows:
   - W A S D : move the cursor up, left, down, right (respectively);
@@ -16,4 +17,5 @@ There are three main folders in this project:
   - E : toggle eraser mode (the dafault value is false) - it enables you to erase or print a single character when pressing SPACE key;
   - SPACE : draws or erases a single character (depending on eraser flag);
   - ESC : resets the game;
+  
   To compile and run TyOS, run the shell command: make tyos.img/run
