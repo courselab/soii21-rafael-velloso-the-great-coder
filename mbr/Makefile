@@ -1,6 +1,6 @@
 #  Makefile - Make script.
 # 
-#   Copyright (c) <YEAR>, <AUTHOR> 
+#   Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 #
 #   This piece of software is a derivative work of SYSeg, by Monaco F. J.
 #   SYSeg is distributed under the license GNU GPL v3, and is available
