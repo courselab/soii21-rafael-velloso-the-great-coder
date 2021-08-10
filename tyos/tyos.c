@@ -1,4 +1,4 @@
-/* tyos.c - the TyOS function library
+/* tyos.c
 
    Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
