@@ -1,6 +1,6 @@
 /* main.c - <one-line-description>
 
-   Copyright (c) <year>, <author(s)-name>  <email(s)>
+   Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
    This file is part of <project>
 
