@@ -1,10 +1,14 @@
-/* mbr.c -  MbrCmd commands.
+/* <file> - <One-line note about this file>
  
-   Copyright (c) 2021, Monaco F. J. <monaco@usp.br>
+   Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
-   This file is part of SYSeg.
+   This piece of software is a derivative work of SYSeg, by Monaco F. J.
+   SYSeg is distributed under the license GNU GPL v3, and is available
+   at the official repository https://www.gitlab.com/monaco/syseg.
 
-   SYSeg is free software: you can redistribute it and/or modify
+   This file is part of <PROJECT>.
+
+   <PROJECT> is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
@@ -17,6 +21,8 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 #include <mbr.h>
 
@@ -135,12 +141,15 @@ int __attribute__((fastcall, naked)) compare (char *s1, char *s2)
   return 0;                /* Bogus return to fulfill funtion's prototype.*/
 }
 
+/* Move cursor to a certain position using "W A S D" buttons */
 
 void __attribute__((fastcall, naked)) move_cursor()
 {
     __asm__ volatile
     (
-        "call clear;"
+        "call clear;" /* Clears screen */
+        
+        /* Moves cursor to screen position (0, 0) */
         "mov $0x0, %%bh;"
         "mov $0x0, %%dh;"
         "mov $0x0, %%dl;"
@@ -148,43 +157,51 @@ void __attribute__((fastcall, naked)) move_cursor()
         "int $0x10;"
         
         "main_loop%=:;"
+        
+            /* Reads input from keyboard */
             "mov $0x0, %%ah;"
             "int $0x16;"
             
             "mov $0x2, %%ah;"
-            "cmp $0x77, %%al;"
+            
+            "cmp $0x77, %%al;" // W
             "je go_up%=;"
-            "cmp $0x73, %%al;"
+            "cmp $0x73, %%al;" // S
             "je go_down%=;"
-            "cmp $0x61, %%al;"
+            "cmp $0x61, %%al;" // A
             "je go_left%=;"
-            "cmp $0x64, %%al;"
+            "cmp $0x64, %%al;" // D
             "je go_right%=;"
-            "cmp $0x1b, %%al;"
+            "cmp $0x1b, %%al;" // ESC
             "je the_end%=;"
             
             "jmp main_loop%=;"
         
-        "go_down%=:;"
-            "add $0x1, %%dh;"
-            "int $0x10;"
-            "jmp main_loop%=;"
-
+        /* Moves cursor UP */
         "go_up%=:;"
             "sub $0x1, %%dh;"
             "int $0x10;"
             "jmp main_loop%=;"
-
-        "go_right%=:;"
-            "add $0x1, %%dl;"
+        
+        /* Moves cursor DOWN */
+        "go_down%=:;"
+            "add $0x1, %%dh;"
             "int $0x10;"
             "jmp main_loop%=;"
-
+        
+        /* Moves cursor LEFT */
         "go_left%=:;"
             "sub $0x1, %%dl;"
             "int $0x10;"
             "jmp main_loop%=;"
-            
+        
+        /* Moves cursor RIGHT */
+        "go_right%=:;"
+            "add $0x1, %%dl;"
+            "int $0x10;"
+            "jmp main_loop%=;"
+        
+        /* Returns */
         "the_end%=:;"
             "ret;"
         :::"ax", "bx","dx"

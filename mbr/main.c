@@ -1,10 +1,14 @@
-/* main.c - Main program of MbrCmd
+/* <file> - <One-line note about this file>
  
-   Copyright (c) 2021, Monaco F. J. <monaco@usp.br>
+   Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
-   This file is part of SYSeg.
+   This piece of software is a derivative work of SYSeg, by Monaco F. J.
+   SYSeg is distributed under the license GNU GPL v3, and is available
+   at the official repository https://www.gitlab.com/monaco/syseg.
 
-   SYSeg is free software: you can redistribute it and/or modify
+   This file is part of <PROJECT>.
+
+   <PROJECT> is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
@@ -17,6 +21,8 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 
 #include <mbr.h>
@@ -42,7 +48,7 @@ int main()
       
         if (compare(cmd, QUIT_CMD))  /* Command quit. */
             quit();
-        else if (compare(cmd, MOVC_CMD))
+        else if (compare(cmd, MOVC_CMD)) /* Command move cursor */
             move_cursor();
         else
         {
