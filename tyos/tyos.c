@@ -22,6 +22,8 @@
 
 #define DEBUG 0
 
+/* Prints the welcome message */
+
 void  __attribute__((naked)) welcome()
 {
     printnl("Welcome to DrawOS! Here are the commands:\r\n\n"
@@ -43,6 +45,8 @@ void  __attribute__((naked)) welcome()
         :::"ax"
     );
 }
+
+/* This is the function that determines the behaviour of the game */
 
 void __attribute__((naked, fastcall)) game()
 {   
@@ -234,6 +238,8 @@ void __attribute__((naked, fastcall)) game()
     );
 #endif
 }
+
+/* Original 'halt' function. Now converted into a loop where the game happens */
 
 void __attribute__((naked, fastcall)) halt()
 {
