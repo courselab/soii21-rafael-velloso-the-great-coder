@@ -1,10 +1,10 @@
-/* tyos.c - The tyOS function library.
- 
+/* tyos.c - the TyOS function library
+
    Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
-   This file is part of SYSeg.
+   This file is part of soii21-rafael-velloso-the-great-coder
 
-   SYSeg is free software: you can redistribute it and/or modify
+   soii21-rafael-velloso-the-great-coder is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.

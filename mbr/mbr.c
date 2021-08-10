@@ -1,4 +1,4 @@
-/* <file> - <One-line note about this file>
+/* mbr.c - library functions of mbr
  
    Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
@@ -6,9 +6,9 @@
    SYSeg is distributed under the license GNU GPL v3, and is available
    at the official repository https://www.gitlab.com/monaco/syseg.
 
-   This file is part of <PROJECT>.
+   This file is part of soii21-rafael-velloso-the-great-coder.
 
-   <PROJECT> is free software: you can redistribute it and/or modify
+   soii21-rafael-velloso-the-great-coder is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.

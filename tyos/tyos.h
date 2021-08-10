@@ -1,10 +1,10 @@
-/* mbr.h -  MbrCmd command
- 
-   Copyright (c) 2021, Monaco F. J. <monaco@usp.br>, Rafael Meliani Velloso <raf.velloso427@usp.br>
+/* tyos.h - <one-line-description>
 
-   This file is part of SYSeg.
+   Copyright (c) 2021, Rafael Meliani Velloso <raf.velloso427@usp.br>
 
-   SYSeg is free software: you can redistribute it and/or modify
+   This file is part of soii21-rafael-velloso-the-great-coder
+
+   soii21-rafael-velloso-the-great-coder is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
