@@ -142,26 +142,31 @@ void __attribute__((naked, fastcall)) game()
             "cmp $0x64, %%al;" // D
             "je end_input_draw%=;"
             "jmp end_input_erase%=;"
-            
+        
+        // prints a '*' or a '\0' character (depending on eraser flag)    
         "put_char%=:;"
             "mov $0x0e, %%ah;"
             "mov $0x0, %%si;"
+
+            // checks eraser flag
             "cmp $0x0, %%cl;"
             "je put_o%=;"
             "cmp $0x1, %%cl;"
             "je put_null%=;"
             
+            // prints '*'
             "put_o%=:;"
                 "mov $0x2a, %%al;"
                 "int $0x10;"
-                "mov $0x2, %%ah;"
+                "mov $0x2, %%ah;" // moves cursor
                 "int $0x10;"
                 "jmp read_input%=;"
-            
+
+            // prints '\0'
             "put_null%=:;"
                 "mov $0x0, %%al;"
                 "int $0x10;"
-                "mov $0x2, %%ah;"
+                "mov $0x2, %%ah;" // moves cursor
                 "int $0x10;"
                 "jmp read_input%=;"
         
